@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 using System.Linq;
@@ -41,9 +42,40 @@ namespace Snoop.Client
         }
     }
 
-    public class MessageViewModel : BindableBase
+    public class MessageViewModel
     {
+        public int Id { get; set; }
+        public int Size { get; set; }
+        public List<MessageHeaderViewModel> Headers { get; set; }
+        public string Type { get; set; }
+        public string ReturnAddress { get; set; }
+        public DateTime SentTime { get; set; }
+        public string Body { get; set; }
+        public string ErrorDetails { get; set; }
 
+        public MessageViewModel(int id, int size, List<MessageHeaderViewModel> headers, string type, string returnAddress, DateTime sentTime, string body, string errorDetails)
+        {
+            Id = id;
+            Size = size;
+            Headers = headers ?? new List<MessageHeaderViewModel>();
+            Type = type;
+            ReturnAddress = returnAddress;
+            SentTime = sentTime;
+            Body = body;
+            ErrorDetails = errorDetails;
+        }
+    }
+
+    public class MessageHeaderViewModel
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+
+        public MessageHeaderViewModel(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
     }
 
     public class TableViewModel : BindableBase
@@ -105,6 +137,13 @@ namespace Snoop.Client
             }
         }
 
+        private int _numberOfMessages;
+        public int NumberOfMessages
+        {
+            get => _numberOfMessages;
+            set => SetProperty(ref _numberOfMessages, value);
+        }
+
         private void TryGetMessages()
         {
             if (SelectedTable is null) return;
@@ -126,10 +165,10 @@ namespace Snoop.Client
 
         private void TryConnect()
         {
+            if (string.IsNullOrWhiteSpace(ConnectionString)) return;
+
             try
             {
-                if (string.IsNullOrWhiteSpace(ConnectionString)) return;
-
                 using (var connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
@@ -144,4 +183,5 @@ namespace Snoop.Client
             }
         }
     }
+
 }
