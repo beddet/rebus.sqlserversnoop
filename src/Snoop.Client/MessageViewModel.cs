@@ -10,11 +10,11 @@ namespace Snoop.Client
         public List<MessageHeaderViewModel> Headers { get; set; }
         public string Type { get; set; }
         public string ReturnAddress { get; set; }
-        public DateTime SentTime { get; set; }
+        public DateTimeOffset SentTime { get; set; }
         public string Body { get; set; }
         public string ErrorDetails { get; set; }
 
-        public MessageViewModel(int id, int size, List<MessageHeaderViewModel> headers, string type, string returnAddress, DateTime sentTime, string body, string errorDetails)
+        public MessageViewModel(int id, int size, List<MessageHeaderViewModel> headers, string type, string returnAddress, DateTimeOffset sentTime, string body, string errorDetails)
         {
             Id = id;
             Size = size;
@@ -24,6 +24,22 @@ namespace Snoop.Client
             SentTime = sentTime;
             Body = body;
             ErrorDetails = errorDetails;
+        }
+
+        public MessageViewModel()
+        {
+            
+        }
+
+        private MessageViewModel(string body)
+        {
+            Body = body;
+            Headers = new List<MessageHeaderViewModel>();
+        }
+
+        public static MessageViewModel Error(string error)
+        {
+            return new MessageViewModel(error);
         }
     }
 }

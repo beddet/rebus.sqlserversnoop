@@ -11,11 +11,13 @@ namespace Snoop.Client
     public class ConnectionViewModel : BindableBase
     {
         public DelegateCommand<TableViewModel> RemoveCommand { get; set; }
+        private RebusService _rebusService;
 
         public ConnectionViewModel()
         {
             Tables = new ObservableCollection<TableViewModel>();
             RemoveCommand = new DelegateCommand<TableViewModel>(x => Remove(x));
+            _rebusService = new RebusService();
         }
 
         private void Remove(TableViewModel tableViewModel)
@@ -54,7 +56,8 @@ namespace Snoop.Client
         private void TryGetMessages()
         {
             if (SelectedTable is null) return;
-            //todo implement
+
+            SelectedTable.LoadMessages(ConnectionString);
         }
 
         private string _connectionString;
@@ -76,13 +79,7 @@ namespace Snoop.Client
 
             try
             {
-                using (var connection = new SqlConnection(ConnectionString))
-                {
-                    connection.Open();
-
-                    var tables = connection.Query<string>("select name from sys.tables").ToList();
-                    Tables = new ObservableCollection<TableViewModel>(tables.Select(x => new TableViewModel(x)));
-                }
+                Tables = new ObservableCollection<TableViewModel>(_rebusService.GetTables(ConnectionString));
             }
             catch (Exception e)
             {
