@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dapper" Version="2.0.35" />
+    <PackageReference Include="prism.wpf" Version="7.2.0.1422" />
+    <PackageReference Include="rebus" Version="6.3.1" />
+    <PackageReference Include="rebus.castle.windsor" Version="6.0.0" />
+    <PackageReference Include="rebus.sqlserver" Version="6.1.2" />
+  </ItemGroup>
+
+</Project>
