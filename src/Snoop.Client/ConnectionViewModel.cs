@@ -76,10 +76,11 @@ namespace Snoop.Client
         private void TryConnect()
         {
             if (string.IsNullOrWhiteSpace(ConnectionString)) return;
+            if (Tables.Any()) return;
 
             try
             {
-                Tables = new ObservableCollection<TableViewModel>(_rebusService.GetTables(ConnectionString));
+                Tables = new ObservableCollection<TableViewModel>(_rebusService.GetValidTables(ConnectionString));
             }
             catch (Exception e)
             {

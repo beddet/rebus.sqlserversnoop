@@ -20,7 +20,6 @@ namespace Snoop.Client
 
                 if (!couldDeserializeHeaders) return null;
 
-                int size = 0; //todo
                 var couldDecodeBody = TryDecodeBody(message, headers, out var body);
 
                 if (!couldDecodeBody) return null;
@@ -32,7 +31,7 @@ namespace Snoop.Client
                 DateTimeOffset.TryParse(sentTimeString, out var sentTime);
                 headers.TryGetValue(Headers.ErrorDetails, out var errors);
 
-                return new MessageViewModel(message.Id, size, headerViewModels, headers[Headers.Type], headers[Headers.ReturnAddress], sentTime, body, errors);
+                return new MessageViewModel(message.Id, headerViewModels, headers[Headers.Type], headers[Headers.ReturnAddress], sentTime, body, errors);
             }
             catch (Exception e)
             {

@@ -7,9 +7,10 @@ namespace Snoop.Client
     public class TableViewModel : BindableBase
     {
         private readonly RebusService _rebusService;
-        public TableViewModel(string name)
+        public TableViewModel(string name, int messageCount)
         {
             Name = name;
+            MessageCount = messageCount;
             Messages = new ObservableCollection<MessageViewModel>();
             _rebusService = new RebusService();
         }
@@ -32,6 +33,13 @@ namespace Snoop.Client
         {
             if (Messages.Any()) return;
             ReloadMessages(connectionString);
+        }
+
+        private int _messageCount;
+        public int MessageCount
+        {
+            get => _messageCount;
+            set => SetProperty(ref _messageCount, value);
         }
 
         private void ReloadMessages(string connectionString)

@@ -5,8 +5,7 @@ namespace Snoop.Client
 {
     public class MessageViewModel
     {
-        public int Id { get; set; }
-        public int Size { get; set; }
+        public long Id { get; set; }
         public List<MessageHeaderViewModel> Headers { get; set; }
         public string Type { get; set; }
         public string ReturnAddress { get; set; }
@@ -14,10 +13,9 @@ namespace Snoop.Client
         public string Body { get; set; }
         public string ErrorDetails { get; set; }
 
-        public MessageViewModel(int id, int size, List<MessageHeaderViewModel> headers, string type, string returnAddress, DateTimeOffset sentTime, string body, string errorDetails)
+        public MessageViewModel(long id, List<MessageHeaderViewModel> headers, string type, string returnAddress, DateTimeOffset sentTime, string body, string errorDetails)
         {
             Id = id;
-            Size = size;
             Headers = headers ?? new List<MessageHeaderViewModel>();
             Type = type;
             ReturnAddress = returnAddress;
