@@ -62,5 +62,33 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Border>
+        <Border Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="220"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="220"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Key" Grid.Column="0"/>
+                    <TextBlock Text="Value" Grid.Column="2"/>
+                </Grid>
+                <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.SelectedMessage.Headers}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="220"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Key}" Grid.Column="0"/>
+                                <TextBlock Text="{Binding Value}" Grid.Column="2"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

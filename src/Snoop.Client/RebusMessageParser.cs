@@ -24,7 +24,12 @@ namespace Snoop.Client
 
                 if (!couldDecodeBody) return null;
 
-                var headerViewModels = headers.Select(item => new MessageHeaderViewModel(item.Key, item.Value)).ToList();
+                //remove ErrorDetails from headers as we assign this to its own property
+                var headerViewModels = headers
+                    .Where(x => x.Key != Headers.ErrorDetails)
+                    .Select(item => new MessageHeaderViewModel(item.Key, item.Value))
+                    .ToList();
+
                 var sentTimeString = headers[Headers.SentTime];
                 sentTimeString = sentTimeString.Substring(0, sentTimeString.LastIndexOf(':'));
 
