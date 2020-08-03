@@ -15,6 +15,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="200" />
+            <RowDefinition Height="550" />
         </Grid.RowDefinitions>
         <Border Grid.Column="0" BorderThickness="1" BorderBrush="Black">
             <StackPanel>
@@ -46,6 +47,20 @@
                     </ListView>
                 </Grid>
             </StackPanel>
+        </Border>
+        <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="Black" BorderThickness="1">
+            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}" SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="400" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Type}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Border>
     </Grid>
 </Window>

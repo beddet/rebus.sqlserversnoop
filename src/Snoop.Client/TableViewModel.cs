@@ -46,5 +46,12 @@ namespace Snoop.Client
         {
             Messages = new ObservableCollection<MessageViewModel>(_rebusService.GetMessages(connectionString, Name));
         }
+
+        private MessageViewModel _selectedMessage;
+        public MessageViewModel SelectedMessage
+        {
+            get => _selectedMessage;
+            set => SetProperty(ref _selectedMessage, value);
+        }
     }
 }
