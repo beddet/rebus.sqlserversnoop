@@ -20,7 +20,7 @@ namespace Snoop.Client
         public List<TableViewModel> GetValidTables(string connectionString)
         {
             var validTables = new List<TableViewModel>();
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
             {
                 connection.Open();
 
@@ -59,7 +59,7 @@ namespace Snoop.Client
             try
             {
                 List<MessageQueryModel> messages;
-                using (var connection = new SqlConnection(connectionString))
+                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
                 {
                     connection.Open();
 
@@ -85,7 +85,7 @@ namespace Snoop.Client
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
                 {
                     connection.Open();
 
