@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snoop.Client"
         mc:Ignorable="d"
-        Title="Rebus SQL Server Snoop" Height="800" Width="1200">
+        Title="Rebus SQL Server Snoop" Height="800" Width="1250">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400" />
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="500" />
         </Grid.ColumnDefinitions>
@@ -20,13 +20,14 @@
         <Border Grid.Column="0" BorderThickness="1" BorderBrush="Black">
             <StackPanel>
                 <WrapPanel>
-                    <TextBlock Text="Connections" Margin="10 0 10 0"/>
+                    <TextBlock Text="Connections" Margin="10 0 10 0" />
                     <Button Content="New" Command="{Binding AddCommand}" />
                 </WrapPanel>
                 <ListView ItemsSource="{Binding Connections}" SelectedItem="{Binding SelectedConnection}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="350"/>
+                            <TextBox Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                     Width="350" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -34,32 +35,39 @@
         </Border>
         <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
             <StackPanel>
-                <TextBlock Text="Tables"></TextBlock>
+                <TextBlock Text="Tables" />
                 <Grid>
-                   <ScrollViewer MaxHeight="200">
-                       <ListView ItemsSource="{Binding SelectedConnection.Tables}" SelectedItem="{Binding SelectedConnection.SelectedTable}">
-                           <ListView.ItemTemplate>
-                               <DataTemplate>
-                                   <WrapPanel>
-                                       <TextBlock Text="{Binding Name}"/>
-                                   </WrapPanel>
-                               </DataTemplate>
-                           </ListView.ItemTemplate>
-                       </ListView>
+                    <ScrollViewer MaxHeight="200">
+                        <ListView ItemsSource="{Binding SelectedConnection.Tables}"
+                                  SelectedItem="{Binding SelectedConnection.SelectedTable}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <TextBlock Text="{Binding Name}" />
+                                        <TextBlock>
+                                            <Run Text="(" />
+                                            <Run Text="{Binding MessageCount}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </ScrollViewer>
                 </Grid>
             </StackPanel>
         </Border>
         <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="Black" BorderThickness="1">
             <ScrollViewer MaxHeight="540">
-                <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}" SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
+                <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}"
+                          SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="400" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Type}"/>
+                                <TextBlock Text="{Binding Type}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -70,12 +78,12 @@
             <StackPanel Orientation="Vertical">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="220"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="220"/>
+                        <ColumnDefinition Width="220" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="220" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Key" Grid.Column="0"/>
-                    <TextBlock Text="Value" Grid.Column="2"/>
+                    <TextBlock Text="Key" Grid.Column="0" />
+                    <TextBlock Text="Value" Grid.Column="2" />
                 </Grid>
                 <ScrollViewer MaxHeight="200">
                     <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.SelectedMessage.Headers}">
@@ -83,12 +91,12 @@
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="220"/>
-                                        <ColumnDefinition Width="10"/>
-                                        <ColumnDefinition Width="220"/>
+                                        <ColumnDefinition Width="220" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="220" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Key}" Grid.Column="0"/>
-                                    <TextBlock Text="{Binding Value}" Grid.Column="2"/>
+                                    <TextBlock Text="{Binding Key}" Grid.Column="0" />
+                                    <TextBlock Text="{Binding Value}" Grid.Column="2" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -100,12 +108,13 @@
             <ScrollViewer MaxHeight="540">
                 <StackPanel>
                     <StackPanel>
-                        <TextBlock Text="Body:" FontWeight="Bold"/>
+                        <TextBlock Text="Body:" FontWeight="Bold" />
                         <TextBlock Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.Body}" />
                     </StackPanel>
                     <StackPanel Margin="0 10 0 0">
-                        <TextBlock Text="Error:" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.ErrorDetails}" MaxWidth="480" TextWrapping="WrapWithOverflow" />
+                        <TextBlock Text="Error:" FontWeight="Bold" />
+                        <TextBlock Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.ErrorDetails}"
+                                   MaxWidth="480" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
