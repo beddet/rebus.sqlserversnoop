@@ -66,8 +66,13 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="400" />
+                                    <ColumnDefinition Width="300" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Type}" />
+                                <TextBlock Text="{Binding Type}" Grid.Column="0" />
+                                <WrapPanel  Grid.Column="1" >
+                                    <Button Content="Delete" Command="{Binding DeleteMessageCommand}" Width="50" />
+                                    <Button Content="Return to source queue" Grid.Column="1" Command="{Binding ReturnMessageCommand}" />
+                                </WrapPanel>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
