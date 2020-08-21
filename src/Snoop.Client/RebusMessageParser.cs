@@ -35,8 +35,9 @@ namespace Snoop.Client
 
                 DateTimeOffset.TryParse(sentTimeString, out var sentTime);
                 headers.TryGetValue(Headers.ErrorDetails, out var errors);
+                headers.TryGetValue(Headers.SourceQueue, out var sourceQueue);
 
-                return new MessageViewModel(message.Id, headerViewModels, headers[Headers.Type], headers[Headers.ReturnAddress], sentTime, body, errors);
+                return new MessageViewModel(message.Id, headerViewModels, headers[Headers.Type], sourceQueue, sentTime, body, errors);
             }
             catch (Exception e)
             {
