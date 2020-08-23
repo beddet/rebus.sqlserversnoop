@@ -36,6 +36,8 @@ namespace Snoop.Client
 
         private void ReturnToSourceQueue(MessageViewModel messageViewModel)
         {
+            if (Name == messageViewModel.SourceQueue) return;
+
             if (SelectedMessage == messageViewModel)
             {
                 SelectedMessage = null;
