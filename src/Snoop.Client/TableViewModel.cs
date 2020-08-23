@@ -40,7 +40,7 @@ namespace Snoop.Client
             {
                 SelectedMessage = null;
             }
-            _rebusService.ReturnToSourceQueue(_connectionString, Name, messageViewModel.SourceQueue, messageViewModel.Id);
+            _rebusService.ReturnToSourceQueue(_connectionString, Name, messageViewModel.SourceQueue, messageViewModel);
             Messages.Remove(messageViewModel);
             MessageCount--;
         }

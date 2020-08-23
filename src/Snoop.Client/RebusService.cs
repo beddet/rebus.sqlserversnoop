@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using Dapper;
+using Rebus.Messages;
 
 namespace Snoop.Client
 {
@@ -55,7 +57,7 @@ namespace Snoop.Client
                 {
                     connection.Open();
 
-                    messages = connection.Query<MessageQueryModel>($"select id, headers, body from {table} with (nolock)").ToList();
+                    messages = connection.Query<MessageQueryModel>($"select id, priority, visible, expiration, headers, body from {table} with (nolock)").ToList();
                 }
 
                 var result = new List<MessageViewModel>();
@@ -70,6 +72,25 @@ namespace Snoop.Client
             {
                 //todo handle error
                 return new List<MessageViewModel>();
+            }
+        }
+
+        private MessageQueryModel LoadSingleMessage(string connectionString, string table, long id)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                {
+                    connection.Open();
+
+                    var messages = connection.Query<MessageQueryModel>($"select id, priority, visible, expiration, headers, body from {table} where id = {id}").ToList();
+                    return messages.FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                //todo handle error
+                return null;
             }
         }
 
@@ -93,30 +114,28 @@ namespace Snoop.Client
             }
         }
 
-        public void ReturnToSourceQueue(string connectionString, string errorTable, string sourceQueue, long id)
+        public void ReturnToSourceQueue(string connectionString, string errorTable, string sourceQueue, MessageViewModel message)
         {
             try
             {
+                var headersWithoutErrors = message.Headers.Where(x => x.Key != Headers.ErrorDetails).ToDictionary(x => x.Key, x => x.Value);
+                var headerBytes = RebusMessageParser.SerializeHeaders(headersWithoutErrors);
+                var loadedMessage = LoadSingleMessage(connectionString, errorTable, message.Id);
                 using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
                 {
                     connection.Open();
-                    var sql = @$"
-INSERT INTO {sourceQueue}
-(
-    priority,
-    expiration,
-    visible,
-    headers,
-    body
-)
-SELECT priority, expiration, visible, headers, body
-FROM {errorTable} WHERE id = {id}";
+                    var sql = $"INSERT INTO {sourceQueue} (priority,expiration,visible,headers,body) values (@priority, @expiration, @visible, @headers, @body)";
                     var cmd = connection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = sql;
+                    cmd.Parameters.Add("headers", SqlDbType.VarBinary).Value = headerBytes;
+                    cmd.Parameters.Add("body", SqlDbType.VarBinary).Value = loadedMessage.Body;
+                    cmd.Parameters.Add("expiration", SqlDbType.DateTimeOffset).Value = loadedMessage.Expiration;
+                    cmd.Parameters.Add("visible", SqlDbType.DateTimeOffset).Value = loadedMessage.Visible;
+                    cmd.Parameters.Add("priority", SqlDbType.Int).Value = loadedMessage.Priority;
                     cmd.ExecuteNonQuery();
                 }
-                DeleteMessage(connectionString, errorTable, id);
+                DeleteMessage(connectionString, errorTable, message.Id);
             }
             catch (Exception e)
             {

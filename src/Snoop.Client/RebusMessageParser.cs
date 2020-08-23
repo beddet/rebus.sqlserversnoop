@@ -61,6 +61,12 @@ namespace Snoop.Client
             }
         }
 
+        public static byte[] SerializeHeaders(Dictionary<string, string> headers)
+        {
+            var json = JsonConvert.SerializeObject(headers);
+            return Encoding.UTF7.GetBytes(json);
+        }
+
         private static bool TryDecodeBody(MessageQueryModel message, Dictionary<string, string> headers, out string body)
         {
             try
