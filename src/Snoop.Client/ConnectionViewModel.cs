@@ -57,7 +57,7 @@ namespace Snoop.Client
         {
             if (SelectedTable is null) return;
 
-            SelectedTable.LoadMessages(ConnectionString);
+            SelectedTable.LoadMessages();
         }
 
         private string _connectionString;

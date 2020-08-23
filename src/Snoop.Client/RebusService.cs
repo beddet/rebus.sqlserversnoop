@@ -33,7 +33,7 @@ namespace Snoop.Client
                         visible,
                         headers,
                         body FROM {table.GetQualifiedName()}) SELECT COUNT(*) FROM cte");
-                        validTables.Add(new TableViewModel(table.GetQualifiedName(), rowCount));
+                        validTables.Add(new TableViewModel(table.GetQualifiedName(), rowCount, connectionString));
                     }
                     catch 
                     {
@@ -84,7 +84,39 @@ namespace Snoop.Client
                     var cmd = connection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = $"delete from {table} where id = {id}";
+                    cmd.ExecuteNonQuery();
                 }
+            }
+            catch (Exception e)
+            {
+                //todo handle error
+            }
+        }
+
+        public void ReturnToSourceQueue(string connectionString, string errorTable, string sourceQueue, long id)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                {
+                    connection.Open();
+                    var sql = @$"
+INSERT INTO {sourceQueue}
+(
+    priority,
+    expiration,
+    visible,
+    headers,
+    body
+)
+SELECT priority, expiration, visible, headers, body
+FROM {errorTable} WHERE id = {id}";
+                    var cmd = connection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = sql;
+                    cmd.ExecuteNonQuery();
+                }
+                DeleteMessage(connectionString, errorTable, id);
             }
             catch (Exception e)
             {
