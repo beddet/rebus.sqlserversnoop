@@ -14,7 +14,7 @@ namespace Snoop.Client
         public List<TableViewModel> GetValidTables(string connectionString)
         {
             var validTables = new List<TableViewModel>();
-            using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+            using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
             {
                 connection.Open();
 
@@ -53,7 +53,7 @@ namespace Snoop.Client
             try
             {
                 List<MessageQueryModel> messages;
-                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
                 {
                     connection.Open();
 
@@ -79,7 +79,7 @@ namespace Snoop.Client
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
                 {
                     connection.Open();
 
@@ -98,7 +98,7 @@ namespace Snoop.Client
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
                 {
                     connection.Open();
 
@@ -121,7 +121,7 @@ namespace Snoop.Client
                 var headersWithoutErrors = message.Headers.Where(x => x.Key != Headers.ErrorDetails).ToDictionary(x => x.Key, x => x.Value);
                 var headerBytes = RebusMessageParser.SerializeHeaders(headersWithoutErrors);
                 var loadedMessage = LoadSingleMessage(connectionString, errorTable, message.Id);
-                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
                 {
                     connection.Open();
                     var sql = $"INSERT INTO {sourceQueue} (priority,expiration,visible,headers,body) values (@priority, @expiration, @visible, @headers, @body)";
@@ -147,7 +147,7 @@ namespace Snoop.Client
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
                 {
                     connection.Open();
 
@@ -161,6 +161,11 @@ namespace Snoop.Client
             {
                 //todo handle error
             }
+        }
+
+        private static string FixConnectionStringFormat(string connectionString)
+        {
+            return connectionString.Replace("//", "/").Replace(@"\\", @"\");
         }
     }
 }
