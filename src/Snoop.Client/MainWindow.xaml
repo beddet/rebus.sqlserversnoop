@@ -48,6 +48,7 @@
                                             <Run Text="{Binding MessageCount}" />
                                             <Run Text=")" />
                                         </TextBlock>
+                                        <Button Content="Reload" Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReloadMessagesCommand}" CommandParameter="{Binding}"/>
                                     </WrapPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

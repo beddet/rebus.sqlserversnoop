@@ -74,9 +74,10 @@ namespace Snoop.Client
             set => SetProperty(ref _messageCount, value);
         }
 
-        private void ReloadMessages()
+        public void ReloadMessages()
         {
             Messages = new ObservableCollection<MessageViewModel>(_rebusService.GetMessages(_connectionString, Name));
+            MessageCount = Messages.Count;
         }
 
         private MessageViewModel _selectedMessage;

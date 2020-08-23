@@ -11,13 +11,20 @@ namespace Snoop.Client
     public class ConnectionViewModel : BindableBase
     {
         public DelegateCommand<TableViewModel> RemoveCommand { get; set; }
+        public DelegateCommand<TableViewModel> ReloadMessagesCommand { get; set; }
         private RebusService _rebusService;
 
         public ConnectionViewModel()
         {
             Tables = new ObservableCollection<TableViewModel>();
             RemoveCommand = new DelegateCommand<TableViewModel>(x => Remove(x));
+            ReloadMessagesCommand = new DelegateCommand<TableViewModel>(ReloadMessages);
             _rebusService = new RebusService();
+        }
+
+        private void ReloadMessages(TableViewModel obj)
+        {
+            obj.ReloadMessages();
         }
 
         private void Remove(TableViewModel tableViewModel)
