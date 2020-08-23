@@ -12,6 +12,7 @@ namespace Snoop.Client
     {
         public DelegateCommand<TableViewModel> RemoveCommand { get; set; }
         public DelegateCommand<TableViewModel> ReloadMessagesCommand { get; set; }
+        public DelegateCommand<TableViewModel> PurgeCommand { get; set; }
         private RebusService _rebusService;
 
         public ConnectionViewModel()
@@ -19,7 +20,13 @@ namespace Snoop.Client
             Tables = new ObservableCollection<TableViewModel>();
             RemoveCommand = new DelegateCommand<TableViewModel>(x => Remove(x));
             ReloadMessagesCommand = new DelegateCommand<TableViewModel>(ReloadMessages);
+            PurgeCommand = new DelegateCommand<TableViewModel>(PurgeMessages);
             _rebusService = new RebusService();
+        }
+
+        private void PurgeMessages(TableViewModel obj)
+        {
+            obj.Purge();
         }
 
         private void ReloadMessages(TableViewModel obj)

@@ -86,5 +86,11 @@ namespace Snoop.Client
             get => _selectedMessage;
             set => SetProperty(ref _selectedMessage, value);
         }
+
+        public void Purge()
+        {
+            _rebusService.Purge(_connectionString, Name);
+            ReloadMessages();
+        }
     }
 }

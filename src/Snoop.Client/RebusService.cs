@@ -142,5 +142,25 @@ namespace Snoop.Client
                 //todo handle error
             }
         }
+
+        public void Purge(string connectionString, string tableName)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString.Replace("//", "/")))
+                {
+                    connection.Open();
+
+                    var cmd = connection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = $"delete from {tableName}";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                //todo handle error
+            }
+        }
     }
 }
