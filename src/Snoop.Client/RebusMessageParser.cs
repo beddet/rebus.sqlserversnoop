@@ -45,7 +45,7 @@ namespace Snoop.Client
             }
         }
 
-        private static bool DeserializeHeaders(MessageQueryModel message, out Dictionary<string, string> dictionary)
+        public static bool DeserializeHeaders(MessageQueryModel message, out Dictionary<string, string> dictionary)
         {
             try
             {

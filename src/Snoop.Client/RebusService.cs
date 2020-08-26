@@ -118,8 +118,6 @@ namespace Snoop.Client
         {
             try
             {
-                var headersWithoutErrors = message.Headers.Where(x => x.Key != Headers.ErrorDetails).ToDictionary(x => x.Key, x => x.Value);
-                var headerBytes = RebusMessageParser.SerializeHeaders(headersWithoutErrors);
                 var loadedMessage = LoadSingleMessage(connectionString, errorTable, message.Id);
                 using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
                 {
@@ -128,7 +126,7 @@ namespace Snoop.Client
                     var cmd = connection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = sql;
-                    cmd.Parameters.Add("headers", SqlDbType.VarBinary).Value = headerBytes;
+                    cmd.Parameters.Add("headers", SqlDbType.VarBinary).Value = loadedMessage.Headers;
                     cmd.Parameters.Add("body", SqlDbType.VarBinary).Value = loadedMessage.Body;
                     cmd.Parameters.Add("expiration", SqlDbType.DateTimeOffset).Value = loadedMessage.Expiration;
                     cmd.Parameters.Add("visible", SqlDbType.DateTimeOffset).Value = loadedMessage.Visible;
