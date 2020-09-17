@@ -44,11 +44,13 @@
                 </WrapPanel>
                 <ListView
                     Grid.Row="1"
+                    HorizontalContentAlignment="Stretch"
                     ItemsSource="{Binding Connections}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     SelectedItem="{Binding SelectedConnection}">
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="client:ConnectionViewModel">
-                            <TextBox Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBox Margin="5" Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
