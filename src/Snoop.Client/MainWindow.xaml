@@ -95,6 +95,10 @@
                                     Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.PurgeCommand}"
                                     CommandParameter="{Binding}"
                                     Content="Purge" />
+                                <Button
+                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="Return all to source queue" />
                             </WrapPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -90,6 +92,35 @@ namespace Snoop.Client
         public void Purge()
         {
             _rebusService.Purge(_connectionString, Name);
+            ReloadMessages();
+        }
+
+        public async Task ReturnAllToSourceQueue()
+        {
+            LoadMessages();
+
+            var messages = Messages.ToList();
+
+            int messageCount = messages.Count;
+
+            var task = Task.Factory.StartNew(() =>
+                {
+                    foreach (var messageViewModel in messages)
+                    {
+                        _rebusService.ReturnToSourceQueue(_connectionString, Name, messageViewModel.SourceQueue, messageViewModel);
+                        messageCount--;
+                    }
+                },
+                TaskCreationOptions.LongRunning);
+
+            while (!task.IsCompleted)
+            {
+                MessageCount = messageCount;
+                await Task.Delay(1000);
+            }
+
+            await task;
+
             ReloadMessages();
         }
     }
