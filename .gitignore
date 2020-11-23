@@ -27,3 +27,4 @@ _ReSharper.*
 ~$*
 packages
 packages/*
+sqlsnoopusersettings.txt
