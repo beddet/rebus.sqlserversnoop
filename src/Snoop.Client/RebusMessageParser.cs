@@ -37,7 +37,16 @@ namespace Snoop.Client
                 headers.TryGetValue(Headers.ErrorDetails, out var errors);
                 headers.TryGetValue(Headers.SourceQueue, out var sourceQueue);
 
-                return new MessageViewModel(message.Id, headerViewModels, headers[Headers.Type], sourceQueue, sentTime, body, errors);
+                return new MessageViewModel(
+                    message.Id,
+                    headerViewModels,
+                    headers[Headers.Type],
+                    sourceQueue,
+                    sentTime,
+                    message.Visible,
+                    message.Expiration,
+                    body,
+                    errors);
             }
             catch (Exception e)
             {

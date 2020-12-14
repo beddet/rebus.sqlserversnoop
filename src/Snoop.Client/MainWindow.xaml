@@ -127,6 +127,14 @@
                             Width="Auto"
                             DisplayMemberBinding="{Binding SentTime}"
                             Header="Sent time" />
+                        <GridViewColumn
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding VisibleFrom}"
+                            Header="Visible from" />
+                        <GridViewColumn
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding ExpiresAt}"
+                            Header="Expires at" />
                         <GridViewColumn Width="Auto" Header="Actions">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
