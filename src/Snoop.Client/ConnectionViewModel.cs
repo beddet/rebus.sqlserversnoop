@@ -100,14 +100,7 @@ namespace Snoop.Client
             if (string.IsNullOrWhiteSpace(ConnectionString)) return;
             if (Tables.Any()) return;
 
-            try
-            {
-                Tables = new ObservableCollection<TableViewModel>(_rebusService.GetValidTables(ConnectionString));
-            }
-            catch (Exception e)
-            {
-                //todo handle errors
-            }
+            Tables = new ObservableCollection<TableViewModel>(_rebusService.GetValidTables(ConnectionString));
         }
     }
 }
