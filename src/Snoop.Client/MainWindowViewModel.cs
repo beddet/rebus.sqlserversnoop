@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -34,6 +35,14 @@ namespace Snoop.Client
         {
             get => _selectedConnection;
             set => SetProperty(ref _selectedConnection, value);
+        }
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            base.OnPropertyChanged(args);
+
+            if (args.PropertyName == nameof(SelectedConnection))
+                SelectedConnection?.LoadTables();
         }
     }
 }
