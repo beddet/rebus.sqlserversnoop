@@ -186,21 +186,34 @@
             Padding="5"
             BorderBrush="Black"
             BorderThickness="1">
-            <ScrollViewer>
-                <StackPanel>
-                    <StackPanel>
-                        <TextBlock FontWeight="Bold" Text="Body:" />
-                        <TextBlock Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.Body}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,10,0,0">
-                        <TextBlock FontWeight="Bold" Text="Error:" />
-                        <TextBlock
-                            MaxWidth="480"
-                            Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.ErrorDetails}"
-                            TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </StackPanel>
-            </ScrollViewer>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    FontWeight="Bold"
+                    Text="Body:" />
+                <TextBox
+                    Grid.Row="1"
+                    IsReadOnly="True"
+                    IsReadOnlyCaretVisible="True"
+                    Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.Body}" />
+                <TextBlock
+                    Grid.Row="2"
+                    FontWeight="Bold"
+                    Text="Error:" />
+                <TextBox
+                    Grid.Row="3"
+                    IsReadOnly="True"
+                    IsReadOnlyCaretVisible="True"
+                    Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.ErrorDetails}"
+                    TextWrapping="WrapWithOverflow"
+                    VerticalScrollBarVisibility="Auto" />
+            </Grid>
         </Border>
     </Grid>
 </Window>
