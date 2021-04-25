@@ -11,6 +11,7 @@ namespace Snoop.Client
         private readonly RebusService _rebusService;
 
         private string _connectionString;
+        private bool _isEditing;
         private int _numberOfMessages;
         private TableViewModel _selectedTable;
         private ObservableCollection<TableViewModel> _tables;
@@ -19,6 +20,14 @@ namespace Snoop.Client
         public DelegateCommand<TableViewModel> ReloadMessagesCommand { get; set; }
         public DelegateCommand<TableViewModel> PurgeCommand { get; set; }
         public DelegateCommand<TableViewModel> ReturnAllToSourceQueueCommand { get; set; }
+        public DelegateCommand EditCommand { get; set; }
+        public DelegateCommand SaveCommand { get; set; }
+
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set => SetProperty(ref _isEditing, value);
+        }
 
         public ObservableCollection<TableViewModel> Tables
         {
@@ -55,7 +64,21 @@ namespace Snoop.Client
             ReloadMessagesCommand = new DelegateCommand<TableViewModel>(ReloadMessages);
             PurgeCommand = new DelegateCommand<TableViewModel>(PurgeMessages);
             ReturnAllToSourceQueueCommand = new DelegateCommand<TableViewModel>(ReturnAllMessagesToSourceQueue);
+            EditCommand = new DelegateCommand(Edit);
+            SaveCommand = new DelegateCommand(Save);
+
             _rebusService = new RebusService();
+        }
+
+        private void Save()
+        {
+            IsEditing = false;
+            LoadTables();
+        }
+
+        private void Edit()
+        {
+            IsEditing = true;
         }
 
         public void LoadTables()

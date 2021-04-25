@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Snoop.Client
 {
@@ -52,6 +54,17 @@ namespace Snoop.Client
 
                 writer.Flush();
             }
+        }
+
+        private void UIElement_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is TextBox {Visibility: Visibility.Visible} textBox)
+                textBox.Focus();
+        }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            _viewModel.OnLoadedCommand.Execute();
         }
     }
 }
