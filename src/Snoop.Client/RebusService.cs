@@ -19,25 +19,25 @@ namespace Snoop.Client
                 connection.Open();
 
                 var tables = connection.Query<TableQueryModel>(@"
-                SELECT t.name AS TableName, s.name AS SchemaName FROM sys.tables t
-                INNER JOIN sys.schemas s ON t.schema_id = s.schema_id").ToList();
+                    SELECT t.name AS TableName, s.name AS SchemaName FROM sys.tables t
+                    INNER JOIN sys.schemas s ON t.schema_id = s.schema_id").ToList();
 
                 foreach (var table in tables)
                 {
-                    //try to get a rowcount from each table, using columns that are in rebus queue tables
-                    //this will throw an exception if the table doesn't have the needed columns
-                    //there could potentially still be an issue if a table has those columns but are not from rebus and have different types
+
+                    // try to get a rowcount from each table, using columns that are in rebus queue tables
+                    // this will throw an exception if the table doesn't have the needed columns
+                    // there could potentially still be an issue if a table has those columns but are not from rebus and have different types
                     try
                     {
-                        var rowCount = connection.ExecuteScalar<int>($@"WITH cte as (SELECT id,
-                        priority,
-                        expiration,
-                        visible,
-                        headers,
-                        body FROM {table.GetQualifiedName()}) SELECT COUNT(*) FROM cte");
+                        connection.Query(
+                            $"SELECT id, priority, expiration, visible, headers, body FROM {table.GetQualifiedName()} WITH (NOLOCK)");
+
+                        var rowCount = connection.ExecuteScalar<int>($@"SELECT COUNT(*) FROM {table.GetQualifiedName()} WITH (NOLOCK)");
+
                         validTables.Add(new TableViewModel(table.GetQualifiedName(), rowCount, connectionString));
                     }
-                    catch 
+                    catch (SqlException ex) when (ex.Message.IndexOf("Invalid column name", StringComparison.OrdinalIgnoreCase) != -1)
                     {
                         //any exception caught here is probably because the table doesn't have the right columns, so we can't use it
                         //ignore the exception
@@ -57,11 +57,13 @@ namespace Snoop.Client
                 {
                     connection.Open();
 
-                    messages = connection.Query<MessageQueryModel>($"select id, priority, visible, expiration, headers, body from {table} with (nolock)").ToList();
+                    messages = connection.Query<MessageQueryModel>($"SELECT id, priority, visible, expiration, headers, body " +
+                                                                   $"FROM {table} WITH (NOLOCK)" +
+                                                                   $"ORDER BY visible").ToList();
                 }
 
                 var result = new List<MessageViewModel>();
-                foreach(var message in messages)
+                foreach (var message in messages)
                 {
                     result.Add(RebusMessageParser.ParseMessage(message));
                 }
