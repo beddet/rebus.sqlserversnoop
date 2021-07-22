@@ -10,53 +10,14 @@ namespace Snoop.Client
     {
         private readonly RebusService _rebusService;
 
-        private string _connectionString;
-        private bool _isEditing;
-        private int _numberOfMessages;
-        private TableViewModel _selectedTable;
-        private ObservableCollection<TableViewModel> _tables;
-
         public DelegateCommand<TableViewModel> RemoveCommand { get; set; }
         public DelegateCommand<TableViewModel> ReloadMessagesCommand { get; set; }
         public DelegateCommand<TableViewModel> PurgeCommand { get; set; }
         public DelegateCommand<TableViewModel> ReturnAllToSourceQueueCommand { get; set; }
         public DelegateCommand EditCommand { get; set; }
         public DelegateCommand SaveCommand { get; set; }
-
-        public bool IsEditing
-        {
-            get => _isEditing;
-            set => SetProperty(ref _isEditing, value);
-        }
-
-        public ObservableCollection<TableViewModel> Tables
-        {
-            get => _tables;
-            set => SetProperty(ref _tables, value);
-        }
-
-        public TableViewModel SelectedTable
-        {
-            get => _selectedTable;
-            set
-            {
-                if (SetProperty(ref _selectedTable, value)) TryGetMessages();
-            }
-        }
-
-        [UsedImplicitly]
-        public int NumberOfMessages
-        {
-            get => _numberOfMessages;
-            set => SetProperty(ref _numberOfMessages, value);
-        }
-
-        public string ConnectionString
-        {
-            get => _connectionString;
-            set => SetProperty(ref _connectionString, value);
-        }
-
+        public DelegateCommand ReloadConnectionCommand { get; }
+        
         public ConnectionViewModel()
         {
             Tables = new ObservableCollection<TableViewModel>();
@@ -66,8 +27,48 @@ namespace Snoop.Client
             ReturnAllToSourceQueueCommand = new DelegateCommand<TableViewModel>(ReturnAllMessagesToSourceQueue);
             EditCommand = new DelegateCommand(Edit);
             SaveCommand = new DelegateCommand(Save);
+            ReloadConnectionCommand = new DelegateCommand(ReloadConnection);
 
             _rebusService = new RebusService();
+        }
+
+        private bool _isEditing;
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set => SetProperty(ref _isEditing, value);
+        }
+
+        private ObservableCollection<TableViewModel> _tables;
+        public ObservableCollection<TableViewModel> Tables
+        {
+            get => _tables;
+            set => SetProperty(ref _tables, value);
+        }
+
+        private TableViewModel _selectedTable;
+        public TableViewModel SelectedTable
+        {
+            get => _selectedTable;
+            set
+            {
+                if (SetProperty(ref _selectedTable, value)) TryGetMessages();
+            }
+        }
+
+        private int _numberOfMessages;
+        [UsedImplicitly]
+        public int NumberOfMessages
+        {
+            get => _numberOfMessages;
+            set => SetProperty(ref _numberOfMessages, value);
+        }
+
+        private string _connectionString;
+        public string ConnectionString
+        {
+            get => _connectionString;
+            set => SetProperty(ref _connectionString, value);
         }
 
         private void Save()
@@ -81,12 +82,13 @@ namespace Snoop.Client
             IsEditing = true;
         }
 
-        public void LoadTables()
+        public async void LoadTables(bool forceRefresh = false)
         {
             if (string.IsNullOrWhiteSpace(ConnectionString)) return;
-            if (Tables.Any()) return;
-
-            Tables = new ObservableCollection<TableViewModel>(_rebusService.GetValidTables(ConnectionString));
+            if (Tables.Any() && !forceRefresh) return;
+            
+            var tables = await _rebusService.GetValidTables(ConnectionString);
+            Tables = new ObservableCollection<TableViewModel>(tables);
         }
 
         private async void ReturnAllMessagesToSourceQueue(TableViewModel obj)
@@ -113,6 +115,11 @@ namespace Snoop.Client
         private void TryGetMessages()
         {
             SelectedTable?.LoadMessages();
+        }
+
+        private void ReloadConnection()
+        {
+            LoadTables(true);
         }
     }
 }

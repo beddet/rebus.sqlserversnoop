@@ -2,46 +2,42 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
-using Rebus.Messages;
 
 namespace Snoop.Client
 {
     public class RebusService
     {
-        public List<TableViewModel> GetValidTables(string connectionString)
+        public async Task<List<TableViewModel>> GetValidTables(string connectionString)
         {
             var validTables = new List<TableViewModel>();
-            using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
-            {
-                connection.Open();
+            await using var connection = new SqlConnection(FixConnectionStringFormat(connectionString));
+            connection.Open();
 
-                var tables = connection.Query<TableQueryModel>(@"
+            var tables = await connection.QueryAsync<TableQueryModel>(@"
                     SELECT t.name AS TableName, s.name AS SchemaName FROM sys.tables t
-                    INNER JOIN sys.schemas s ON t.schema_id = s.schema_id").ToList();
+                    INNER JOIN sys.schemas s ON t.schema_id = s.schema_id");
 
-                foreach (var table in tables)
+            foreach (var table in tables)
+            {
+                // try to get a rowcount from each table, using columns that are in rebus queue tables
+                // this will throw an exception if the table doesn't have the needed columns
+                // there could potentially still be an issue if a table has those columns but are not from rebus and have different types
+                try
                 {
+                    await connection.QueryAsync(
+                        $"SELECT TOP 1 id, priority, expiration, visible, headers, body FROM {table.GetQualifiedName()} WITH (NOLOCK)");
 
-                    // try to get a rowcount from each table, using columns that are in rebus queue tables
-                    // this will throw an exception if the table doesn't have the needed columns
-                    // there could potentially still be an issue if a table has those columns but are not from rebus and have different types
-                    try
-                    {
-                        connection.Query(
-                            $"SELECT id, priority, expiration, visible, headers, body FROM {table.GetQualifiedName()} WITH (NOLOCK)");
+                    var rowCount = await connection.ExecuteScalarAsync<int>($@"SELECT COUNT(*) FROM {table.GetQualifiedName()} WITH (NOLOCK)");
 
-                        var rowCount = connection.ExecuteScalar<int>($@"SELECT COUNT(*) FROM {table.GetQualifiedName()} WITH (NOLOCK)");
-
-                        validTables.Add(new TableViewModel(table.GetQualifiedName(), rowCount, connectionString));
-                    }
-                    catch (SqlException ex) when (ex.Message.IndexOf("Invalid column name", StringComparison.OrdinalIgnoreCase) != -1)
-                    {
-                        //any exception caught here is probably because the table doesn't have the right columns, so we can't use it
-                        //ignore the exception
-                    }
+                    validTables.Add(new TableViewModel(table.GetQualifiedName(), rowCount, connectionString));
+                }
+                catch (SqlException ex) when (ex.Message.IndexOf("Invalid column name", StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    //any exception caught here is probably because the table doesn't have the right columns, so we can't use it
+                    //ignore the exception
                 }
             }
 

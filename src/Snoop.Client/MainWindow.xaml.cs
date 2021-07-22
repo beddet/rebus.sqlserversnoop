@@ -4,16 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Serilog;
 
 namespace Snoop.Client
 {
     public partial class MainWindow
     {
-        private MainWindowViewModel _viewModel;
-        private const string filePath = "sqlsnoopusersettings.txt";
+        private readonly MainWindowViewModel _viewModel;
+        private const string FilePath = "sqlsnoopusersettings.txt";
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Log.Logger = new LoggerConfiguration()
+                //.MinimumLevel.Error()
+                .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             DataContext = _viewModel = new MainWindowViewModel();
 
@@ -32,19 +39,19 @@ namespace Snoop.Client
 
         private List<string> ReadSettings()
         {
-            if(!File.Exists(filePath)) return new List<string>();
+            if(!File.Exists(FilePath)) return new List<string>();
 
-            return File.ReadAllLines(filePath).ToList();
+            return File.ReadAllLines(FilePath).ToList();
         }
 
         private void SaveSettings()
         {
-            if (File.Exists(filePath))
+            if (File.Exists(FilePath))
             {
-                File.Delete(filePath);
+                File.Delete(FilePath);
             }
 
-            using (var file = File.Create(filePath))
+            using (var file = File.Create(FilePath))
             using (var writer = new StreamWriter(file))
             {
                 foreach (var connection in _viewModel.Connections)
