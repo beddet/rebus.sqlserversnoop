@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Prism.Commands;
@@ -8,12 +9,14 @@ namespace Snoop.Client.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        public LoggerViewModel LoggerViewModel { get; }
         public DelegateCommand AddCommand { get; set; }
         public DelegateCommand<ConnectionViewModel> DeleteCommand { get; set; }
         public DelegateCommand OnLoadedCommand { get; }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(LoggerViewModel loggerViewModel)
         {
+            LoggerViewModel = loggerViewModel ?? throw new ArgumentNullException(nameof(loggerViewModel));
             Connections = new ObservableCollection<ConnectionViewModel>();
             AddCommand = new DelegateCommand(Add);
             DeleteCommand = new DelegateCommand<ConnectionViewModel>(Delete);

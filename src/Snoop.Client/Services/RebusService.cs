@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Serilog;
+using Serilog.Core;
 using Snoop.Client.Services.QueryModels;
 using Snoop.Client.ViewModels;
 
@@ -40,6 +42,7 @@ namespace Snoop.Client.Services
                 {
                     //any exception caught here is probably because the table doesn't have the right columns, so we can't use it
                     //ignore the exception
+                    Log.Logger.Error(ex.Message);
                 }
             }
 

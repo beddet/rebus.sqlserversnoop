@@ -17,255 +17,301 @@
         <helpers:BooleanToVisibilityValueConverter x:Key="BooleanToVisibilityConverter" IsInverted="False" />
         <helpers:BooleanToVisibilityValueConverter x:Key="InvertedBooleanToVisibilityConverter" IsInverted="True" />
     </Window.Resources>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400*" />
-            <ColumnDefinition Width="300*" />
-            <ColumnDefinition Width="500*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="225" />
-            <RowDefinition Height="550*" />
-        </Grid.RowDefinitions>
-        <Border
-            Grid.Column="0"
-            Margin="5"
-            BorderBrush="Black"
-            BorderThickness="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <WrapPanel>
-                    <TextBlock
-                        Margin="10,0,10,0"
-                        VerticalAlignment="Center"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Text="Connections" />
-                    <Button
+        <TabControl>
+            <TabItem Header="Messages">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400*" />
+                        <ColumnDefinition Width="300*" />
+                        <ColumnDefinition Width="500*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="225" />
+                        <RowDefinition Height="550*" />
+                    </Grid.RowDefinitions>
+                    <Border
+                        Grid.Column="0"
                         Margin="5"
-                        Command="{Binding AddCommand}"
-                        Content="New" />
-                </WrapPanel>
-                <ListView
-                    Grid.Row="1"
-                    HorizontalContentAlignment="Stretch"
-                    ItemsSource="{Binding Connections}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    SelectedItem="{Binding SelectedConnection}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate DataType="viewModels:ConnectionViewModel">
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <WrapPanel>
+                                <TextBlock
+                                    Margin="10,0,10,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Text="Connections" />
+                                <Button
+                                    Margin="5"
+                                    Command="{Binding AddCommand}"
+                                    Content="New" />
+                            </WrapPanel>
+                            <ListView
+                                Grid.Row="1"
+                                HorizontalContentAlignment="Stretch"
+                                ItemsSource="{Binding Connections}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                SelectedItem="{Binding SelectedConnection}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate DataType="viewModels:ConnectionViewModel">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="50" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="35" />
+                                            </Grid.RowDefinitions>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                Margin="5"
+                                                Content="{Binding ConnectionString}"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
+                                            <Button
+                                                Grid.Column="2"
+                                                Command="{Binding EditCommand}"
+                                                Content="Edit"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
+                                            <Button
+                                                Content="Reload"
+                                                Grid.Column="1"
+                                                Command="{Binding ReloadConnectionCommand}"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
+                                            <TextBox
+                                                Grid.Column="0"
+                                                Margin="5"
+                                                VerticalContentAlignment="Center"
+                                                IsVisibleChanged="UIElement_OnIsVisibleChanged"
+                                                Text="{Binding ConnectionString, Mode=TwoWay}"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                            <Button
+                                                Grid.Column="1"
+                                                Command="{Binding SaveCommand}"
+                                                Content="Save"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                            <Button
+                                                Grid.Column="2"
+                                                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"
+                                                Content="Delete"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="5"
+                        Padding="2"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Text="Tables" />
+                            <ListView
+                                Grid.Row="1"
+                                BorderThickness="0"
+                                ItemsSource="{Binding SelectedConnection.Tables}"
+                                SelectedItem="{Binding SelectedConnection.SelectedTable}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate DataType="viewModels:TableViewModel">
+                                        <WrapPanel>
+                                            <TextBlock Text="{Binding Name}" />
+                                            <TextBlock>
+                                                <Run Text="(" />
+                                                <Run Text="{Binding MessageCount}" />
+                                                <Run Text=")" />
+                                            </TextBlock>
+                                            <Button
+                                                Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReloadMessagesCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Reload" />
+                                            <Button
+                                                Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.PurgeCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Purge" />
+                                            <Button
+                                                Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Return all to source queue" />
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="5"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}"
+                                  SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Type}"
+                                        Header="Message type" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding SourceQueue}"
+                                        Header="Source queue" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding SentTime}"
+                                        Header="Sent time" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding VisibleFrom}"
+                                        Header="Visible from" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding ExpiresAt}"
+                                        Header="Expires at" />
+                                    <GridViewColumn Width="Auto" Header="Actions">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button
+                                                        Width="50"
+                                                        Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.SelectedTable.DeleteMessageCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="Delete" />
+                                                    <Button
+                                                        Margin="5,0,0,0"
+                                                        Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.SelectedTable.ReturnToSourceQueueCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="Return to source queue" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Border>
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="5"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.SelectedMessage.Headers}">
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Key}"
+                                        Header="Key" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Value}"
+                                        Header="Value" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Border>
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="5"
+                        Padding="5"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                FontWeight="Bold"
+                                Text="Body:" />
+                            <TextBox
+                                Grid.Row="1"
+                                IsReadOnly="True"
+                                IsReadOnlyCaretVisible="True"
+                                Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.Body}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                FontWeight="Bold"
+                                Text="Error:" />
+                            <TextBox
+                                Grid.Row="3"
+                                IsReadOnly="True"
+                                IsReadOnlyCaretVisible="True"
+                                Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.ErrorDetails}"
+                                TextWrapping="WrapWithOverflow"
+                                VerticalScrollBarVisibility="Auto" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run Text="Logs" />
+                        <Run Text="("></Run>
+                        <Run Text="{Binding LoggerViewModel.NumberOfEvents}"></Run>
+                        <Run Text=")"></Run>
+                    </TextBlock>
+                </TabItem.Header>
+                
+                <!--
+                add scroll
+                add clear button
+                fix some formatting for multiline
+                change to text field to allow copying?
+                filter on level?
+                -->
+                <ItemsControl ItemsSource="{Binding LoggerViewModel.Events}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="115" />
+                                    <ColumnDefinition Width="80" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="50" />
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="35" />
-                                </Grid.RowDefinitions>
-                                <Label
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Margin="5"
-                                    Content="{Binding ConnectionString}"
-                                    Visibility="{Binding IsEditing, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
-                                <Button
-                                    Grid.Column="2"
-                                    Command="{Binding EditCommand}"
-                                    Content="Edit"
-                                    Visibility="{Binding IsEditing, Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
-                                <Button
-                                    Content="Reload"
-                                    Grid.Column="1"
-                                    Command="{Binding ReloadConnectionCommand}"
-                                    Visibility="{Binding IsEditing, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
-                                />
-                                <TextBox
-                                    Grid.Column="0"
-                                    Margin="5"
-                                    VerticalContentAlignment="Center"
-                                    IsVisibleChanged="UIElement_OnIsVisibleChanged"
-                                    Text="{Binding ConnectionString, Mode=TwoWay}"
-                                    Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <Button
-                                    Grid.Column="1"
-                                    Command="{Binding SaveCommand}"
-                                    Content="Save"
-                                    Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <Button
-                                    Grid.Column="2"
-                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Delete"
-                                    Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
+                                
+                                <TextBlock Text="{Binding Timestamp, StringFormat=yyyy-dd-MM HH:mm:ss}" Grid.Column="0" />
+                                <TextBlock Grid.Column="1">
+                                    <Run Text="[" />
+                                    <Run Text="{Binding Level, Mode=OneTime}" />
+                                    <Run Text="]" />
+                                </TextBlock>
+                                <TextBlock Text="{Binding Message}" Grid.Column="2" />
                             </Grid>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-        </Border>
-        <Border
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="5"
-            Padding="2"
-            BorderBrush="Black"
-            BorderThickness="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.Row="0"
-                    FontSize="14"
-                    FontWeight="Bold"
-                    Text="Tables" />
-                <ListView
-                    Grid.Row="1"
-                    BorderThickness="0"
-                    ItemsSource="{Binding SelectedConnection.Tables}"
-                    SelectedItem="{Binding SelectedConnection.SelectedTable}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate DataType="viewModels:TableViewModel">
-                            <WrapPanel>
-                                <TextBlock Text="{Binding Name}" />
-                                <TextBlock>
-                                    <Run Text="(" />
-                                    <Run Text="{Binding MessageCount}" />
-                                    <Run Text=")" />
-                                </TextBlock>
-                                <Button
-                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReloadMessagesCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Reload" />
-                                <Button
-                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.PurgeCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Purge" />
-                                <Button
-                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Return all to source queue" />
-                            </WrapPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-        </Border>
-        <Border
-            Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="5"
-            BorderBrush="Black"
-            BorderThickness="1">
-            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}" SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding Type}"
-                            Header="Message type" />
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding SourceQueue}"
-                            Header="Source queue" />
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding SentTime}"
-                            Header="Sent time" />
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding VisibleFrom}"
-                            Header="Visible from" />
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding ExpiresAt}"
-                            Header="Expires at" />
-                        <GridViewColumn Width="Auto" Header="Actions">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button
-                                            Width="50"
-                                            Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.SelectedTable.DeleteMessageCommand}"
-                                            CommandParameter="{Binding}"
-                                            Content="Delete" />
-                                        <Button
-                                            Margin="5,0,0,0"
-                                            Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.SelectedTable.ReturnToSourceQueueCommand}"
-                                            CommandParameter="{Binding}"
-                                            Content="Return to source queue" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Border>
-        <Border
-            Grid.Row="0"
-            Grid.Column="2"
-            Margin="5"
-            BorderBrush="Black"
-            BorderThickness="1">
-            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.SelectedMessage.Headers}">
-
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding Key}"
-                            Header="Key" />
-                        <GridViewColumn
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding Value}"
-                            Header="Value" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Border>
-        <Border
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="5"
-            Padding="5"
-            BorderBrush="Black"
-            BorderThickness="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBlock
-                    Grid.Row="0"
-                    FontWeight="Bold"
-                    Text="Body:" />
-                <TextBox
-                    Grid.Row="1"
-                    IsReadOnly="True"
-                    IsReadOnlyCaretVisible="True"
-                    Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.Body}" />
-                <TextBlock
-                    Grid.Row="2"
-                    FontWeight="Bold"
-                    Text="Error:" />
-                <TextBox
-                    Grid.Row="3"
-                    IsReadOnly="True"
-                    IsReadOnlyCaretVisible="True"
-                    Text="{Binding SelectedConnection.SelectedTable.SelectedMessage.ErrorDetails}"
-                    TextWrapping="WrapWithOverflow"
-                    VerticalScrollBarVisibility="Auto" />
-            </Grid>
-        </Border>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

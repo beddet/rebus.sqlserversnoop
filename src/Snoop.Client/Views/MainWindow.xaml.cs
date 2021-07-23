@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using Snoop.Client.ViewModels;
 
 namespace Snoop.Client.Views
@@ -17,13 +19,16 @@ namespace Snoop.Client.Views
         public MainWindow()
         {
             InitializeComponent();
-
+            
+            var loggerViewModel = new LoggerViewModel();
+            
             Log.Logger = new LoggerConfiguration()
                 //.MinimumLevel.Error()
-                .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Sink(loggerViewModel)
                 .CreateLogger();
-
-            DataContext = _viewModel = new MainWindowViewModel();
+            
+            DataContext = _viewModel = new MainWindowViewModel(loggerViewModel);
+            Log.Logger.Information("test info");
 
             var settings = ReadSettings();
             if(settings.Any()) _viewModel.Connections.Clear();
