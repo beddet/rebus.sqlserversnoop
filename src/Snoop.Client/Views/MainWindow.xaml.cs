@@ -5,8 +5,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Serilog;
+using Snoop.Client.ViewModels;
 
-namespace Snoop.Client
+namespace Snoop.Client.Views
 {
     public partial class MainWindow
     {

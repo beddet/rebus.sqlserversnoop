@@ -7,8 +7,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rebus.Compression;
 using Rebus.Messages;
+using Snoop.Client.Services.QueryModels;
+using Snoop.Client.ViewModels;
 
-namespace Snoop.Client
+namespace Snoop.Client.Services
 {
     public static class RebusMessageParser
     {

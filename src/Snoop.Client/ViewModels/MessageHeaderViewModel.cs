@@ -1,4 +1,4 @@
-﻿namespace Snoop.Client
+﻿namespace Snoop.Client.ViewModels
 {
     public class MessageHeaderViewModel
     {

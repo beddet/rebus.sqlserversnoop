@@ -1,4 +1,4 @@
-﻿namespace Snoop.Client
+﻿namespace Snoop.Client.Services.QueryModels
 {
     public class TableQueryModel
     {

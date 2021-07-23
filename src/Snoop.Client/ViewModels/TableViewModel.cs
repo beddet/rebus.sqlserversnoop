@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Prism.Commands;
 using Prism.Mvvm;
+using Snoop.Client.Services;
 
-namespace Snoop.Client
+namespace Snoop.Client.ViewModels
 {
     public class TableViewModel : BindableBase
     {

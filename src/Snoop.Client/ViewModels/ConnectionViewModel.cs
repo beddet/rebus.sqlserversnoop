@@ -3,8 +3,9 @@ using System.Linq;
 using JetBrains.Annotations;
 using Prism.Commands;
 using Prism.Mvvm;
+using Snoop.Client.Services;
 
-namespace Snoop.Client
+namespace Snoop.Client.ViewModels
 {
     public class ConnectionViewModel : BindableBase
     {
@@ -52,7 +53,8 @@ namespace Snoop.Client
             get => _selectedTable;
             set
             {
-                if (SetProperty(ref _selectedTable, value)) TryGetMessages();
+                if (SetProperty(ref _selectedTable, value)) 
+                    TryGetMessages();
             }
         }
 

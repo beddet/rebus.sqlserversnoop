@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 
-namespace Snoop.Client
+namespace Snoop.Client.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {

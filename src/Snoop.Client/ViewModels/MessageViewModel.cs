@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Snoop.Client
+namespace Snoop.Client.ViewModels
 {
     public class MessageViewModel
     {

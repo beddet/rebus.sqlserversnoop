@@ -5,8 +5,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Snoop.Client.Services.QueryModels;
+using Snoop.Client.ViewModels;
 
-namespace Snoop.Client
+namespace Snoop.Client.Services
 {
     public class RebusService
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Snoop.Client
+namespace Snoop.Client.Services.QueryModels
 {
     public class MessageQueryModel
     {
