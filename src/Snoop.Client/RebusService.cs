@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -70,7 +70,7 @@ namespace Snoop.Client
 
                 return result.Where(x => x != null).ToList(); //todo handle errors - ParseMessage returns null if it fails
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
                 return new List<MessageViewModel>();
@@ -89,7 +89,7 @@ namespace Snoop.Client
                     return messages.FirstOrDefault();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
                 return null;
@@ -110,7 +110,7 @@ namespace Snoop.Client
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
             }
@@ -137,7 +137,7 @@ namespace Snoop.Client
                 }
                 DeleteMessage(connectionString, errorTable, message.Id);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
             }
@@ -157,7 +157,7 @@ namespace Snoop.Client
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
             }
