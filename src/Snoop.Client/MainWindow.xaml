@@ -204,6 +204,11 @@
                                             Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.SelectedTable.ReturnToSourceQueueCommand}"
                                             CommandParameter="{Binding}"
                                             Content="Return to source queue" />
+                                        <Button
+                                            Margin="5,0,0,0"
+                                            Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.SelectedTable.SetVisibleNowCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="Set visible now" />
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

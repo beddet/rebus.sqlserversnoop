@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +12,7 @@ namespace Snoop.Client
         private readonly string _connectionString;
         public DelegateCommand<MessageViewModel> DeleteMessageCommand { get; set; }
         public DelegateCommand<MessageViewModel> ReturnToSourceQueueCommand { get; set; }
+        public DelegateCommand<MessageViewModel> SetVisibleNowCommand { get; set; }
 
         private readonly RebusService _rebusService;
         public TableViewModel(string name, int messageCount, string connectionString)
@@ -23,6 +24,7 @@ namespace Snoop.Client
             _rebusService = new RebusService();
             DeleteMessageCommand = new DelegateCommand<MessageViewModel>(DeleteMessage);
             ReturnToSourceQueueCommand = new DelegateCommand<MessageViewModel>(ReturnToSourceQueue);
+            SetVisibleNowCommand = new DelegateCommand<MessageViewModel>(SetVisibleNow);
         }
 
         private void DeleteMessage(MessageViewModel messageViewModel)
@@ -45,8 +47,19 @@ namespace Snoop.Client
                 SelectedMessage = null;
             }
             _rebusService.ReturnToSourceQueue(_connectionString, Name, messageViewModel.SourceQueue, messageViewModel);
-            Messages.Remove(messageViewModel);
-            MessageCount--;
+            ReloadMessages();
+        }
+
+        private void SetVisibleNow(MessageViewModel messageViewModel)
+        {
+            if (Name == messageViewModel.SourceQueue) return;
+
+            if (SelectedMessage == messageViewModel)
+            {
+                SelectedMessage = null;
+            }
+            _rebusService.SetVisibleNow(_connectionString, Name, messageViewModel);
+            ReloadMessages();
         }
 
         private string _name;

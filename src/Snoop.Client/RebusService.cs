@@ -165,5 +165,28 @@ namespace Snoop.Client
         {
             return connectionString.Replace("//", "/").Replace(@"\\", @"\");
         }
+
+        public void SetVisibleNow(string connectionString, string queue, MessageViewModel message)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
+                {
+                    connection.Open();
+                    var sql = $"UPDATE {queue} " +
+                              $"SET visible = getdate() " +
+                              $"WHERE Id = @id";
+                    var cmd = connection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("id", SqlDbType.Int).Value = message.Id;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception)
+            {
+                //todo handle error
+            }
+        }
     }
 }
