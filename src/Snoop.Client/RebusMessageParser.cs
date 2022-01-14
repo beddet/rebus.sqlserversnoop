@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,7 +48,7 @@ namespace Snoop.Client
                     body,
                     errors);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -58,7 +58,7 @@ namespace Snoop.Client
         {
             try
             {
-                var headersAsJsonString = Encoding.UTF7.GetString(message.Headers);
+                var headersAsJsonString = Encoding.UTF8.GetString(message.Headers);
                 var headers = JsonConvert.DeserializeObject<Dictionary<string, string>>(headersAsJsonString);
                 dictionary = headers;
                 return true;
@@ -68,12 +68,6 @@ namespace Snoop.Client
                 dictionary = null;
                 return false;
             }
-        }
-
-        public static byte[] SerializeHeaders(Dictionary<string, string> headers)
-        {
-            var json = JsonConvert.SerializeObject(headers);
-            return Encoding.UTF7.GetBytes(json);
         }
 
         private static bool TryDecodeBody(MessageQueryModel message, Dictionary<string, string> headers, out string body)
@@ -88,7 +82,7 @@ namespace Snoop.Client
 
                 if (!headers.ContainsKey(Headers.ContentType))
                 {
-                    body = string.Format("Message headers don't contain an element with the '{0}' key", Headers.ContentType);
+                    body = $"Message headers don't contain an element with the '{Headers.ContentType}' key";
 
                     return false;
                 }
@@ -116,7 +110,7 @@ namespace Snoop.Client
             }
             catch (Exception e)
             {
-                body = string.Format("An error occurred while decoding the body: {0}", e);
+                body = $"An error occurred while decoding the body: {e}";
                 return false;
             }
         }

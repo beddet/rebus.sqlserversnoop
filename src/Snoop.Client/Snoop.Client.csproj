@@ -1,18 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="dapper" Version="2.0.35" />
-    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
-    <PackageReference Include="prism.wpf" Version="7.2.0.1422" />
-    <PackageReference Include="rebus" Version="6.3.1" />
-    <PackageReference Include="rebus.castle.windsor" Version="6.0.0" />
-    <PackageReference Include="rebus.sqlserver" Version="6.1.2" />
+    <PackageReference Include="dapper" Version="2.0.123" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.1" />
+    <PackageReference Include="prism.wpf" Version="8.1.97" />
+    <PackageReference Include="rebus" Version="6.6.1" />
+    <PackageReference Include="rebus.castle.windsor" Version="6.1.0" />
+    <PackageReference Include="rebus.sqlserver" Version="7.2.0" />
   </ItemGroup>
 
 </Project>

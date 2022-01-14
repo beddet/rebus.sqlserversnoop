@@ -1,11 +1,11 @@
-﻿<Window
+<Window
     x:Class="Snoop.Client.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:client="clr-namespace:Snoop.Client"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="Parent"
+    x:Name="Root"
     Title="Rebus SQL Server Snoop"
     Width="1250"
     Height="800"
@@ -117,33 +117,43 @@
                     FontSize="14"
                     FontWeight="Bold"
                     Text="Tables" />
-                <ListView
+                <ListView 
                     Grid.Row="1"
+                    HorizontalContentAlignment="Stretch"
                     BorderThickness="0"
                     ItemsSource="{Binding SelectedConnection.Tables}"
                     SelectedItem="{Binding SelectedConnection.SelectedTable}">
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="client:TableViewModel">
-                            <WrapPanel>
-                                <TextBlock Text="{Binding Name}" />
-                                <TextBlock>
-                                    <Run Text="(" />
-                                    <Run Text="{Binding MessageCount}" />
-                                    <Run Text=")" />
-                                </TextBlock>
-                                <Button
-                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReloadMessagesCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Reload" />
-                                <Button
-                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.PurgeCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Purge" />
-                                <Button
-                                    Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Return all to source queue" />
-                            </WrapPanel>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock>
+                                        <Run Text="(" />
+                                        <Run Text="{Binding MessageCount}" />
+                                        <Run Text=")" />
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <Button
+                                        Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.ReloadMessagesCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="Reload" />
+                                    <Button
+                                        Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.PurgeCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="Purge" />
+                                    <Button
+                                        Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="Return all to source queue" />
+                                </StackPanel>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -156,7 +166,8 @@
             Margin="5"
             BorderBrush="Black"
             BorderThickness="1">
-            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}" SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
+            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}"
+                      SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
@@ -185,14 +196,19 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button
                                             Width="50"
-                                            Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.SelectedTable.DeleteMessageCommand}"
+                                            Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.SelectedTable.DeleteMessageCommand}"
                                             CommandParameter="{Binding}"
                                             Content="Delete" />
                                         <Button
                                             Margin="5,0,0,0"
-                                            Command="{Binding ElementName=Parent, Path=DataContext.SelectedConnection.SelectedTable.ReturnToSourceQueueCommand}"
+                                            Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.SelectedTable.ReturnToSourceQueueCommand}"
                                             CommandParameter="{Binding}"
                                             Content="Return to source queue" />
+                                        <Button
+                                            Margin="5,0,0,0"
+                                            Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.SelectedTable.SetVisibleNowCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="Set visible now" />
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

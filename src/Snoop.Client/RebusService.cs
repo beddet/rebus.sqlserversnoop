@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using Dapper;
-using Rebus.Messages;
+using Microsoft.Data.SqlClient;
 
 namespace Snoop.Client
 {
@@ -70,7 +68,7 @@ namespace Snoop.Client
 
                 return result.Where(x => x != null).ToList(); //todo handle errors - ParseMessage returns null if it fails
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
                 return new List<MessageViewModel>();
@@ -89,7 +87,7 @@ namespace Snoop.Client
                     return messages.FirstOrDefault();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
                 return null;
@@ -110,7 +108,7 @@ namespace Snoop.Client
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
             }
@@ -137,7 +135,7 @@ namespace Snoop.Client
                 }
                 DeleteMessage(connectionString, errorTable, message.Id);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
             }
@@ -157,7 +155,7 @@ namespace Snoop.Client
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //todo handle error
             }
@@ -166,6 +164,29 @@ namespace Snoop.Client
         private static string FixConnectionStringFormat(string connectionString)
         {
             return connectionString.Replace("//", "/").Replace(@"\\", @"\");
+        }
+
+        public void SetVisibleNow(string connectionString, string queue, MessageViewModel message)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(FixConnectionStringFormat(connectionString)))
+                {
+                    connection.Open();
+                    var sql = $"UPDATE {queue} " +
+                              $"SET visible = getdate() " +
+                              $"WHERE Id = @id";
+                    var cmd = connection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = sql;
+                    cmd.Parameters.Add("id", SqlDbType.Int).Value = message.Id;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception)
+            {
+                //todo handle error
+            }
         }
     }
 }
