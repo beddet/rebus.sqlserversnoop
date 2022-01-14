@@ -117,33 +117,43 @@
                     FontSize="14"
                     FontWeight="Bold"
                     Text="Tables" />
-                <ListView
+                <ListView 
                     Grid.Row="1"
+                    HorizontalContentAlignment="Stretch"
                     BorderThickness="0"
                     ItemsSource="{Binding SelectedConnection.Tables}"
                     SelectedItem="{Binding SelectedConnection.SelectedTable}">
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="client:TableViewModel">
-                            <WrapPanel>
-                                <TextBlock Text="{Binding Name}" />
-                                <TextBlock>
-                                    <Run Text="(" />
-                                    <Run Text="{Binding MessageCount}" />
-                                    <Run Text=")" />
-                                </TextBlock>
-                                <Button
-                                    Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.ReloadMessagesCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Reload" />
-                                <Button
-                                    Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.PurgeCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Purge" />
-                                <Button
-                                    Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="Return all to source queue" />
-                            </WrapPanel>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock>
+                                        <Run Text="(" />
+                                        <Run Text="{Binding MessageCount}" />
+                                        <Run Text=")" />
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <Button
+                                        Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.ReloadMessagesCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="Reload" />
+                                    <Button
+                                        Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.PurgeCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="Purge" />
+                                    <Button
+                                        Command="{Binding ElementName=Root, Path=DataContext.SelectedConnection.ReturnAllToSourceQueueCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="Return all to source queue" />
+                                </StackPanel>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -156,7 +166,8 @@
             Margin="5"
             BorderBrush="Black"
             BorderThickness="1">
-            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}" SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
+            <ListView ItemsSource="{Binding SelectedConnection.SelectedTable.Messages}"
+                      SelectedItem="{Binding SelectedConnection.SelectedTable.SelectedMessage}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
